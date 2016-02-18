@@ -1,0 +1,5 @@
+[ui]
+username = Soichiro Inatani <inai17ibar@gmail.com>
+
+[extensions]
+hgflow = /Users/inai17ibar/Downloads/src/hgflow/hgflow.py
