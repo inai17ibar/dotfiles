@@ -39,3 +39,10 @@ $ ln -sf ~/dotfiles/indent ~/.vim
 $ ln -sf ~/dotfiles/.bash_profile ~/.bash_profile
 ```
 
+###シェルスクリプトを実行する
+
+```
+$ chmod +x dotfiles/setup.sh
+$ cd ~/dotfiles
+$ ./setup.sh
+```
