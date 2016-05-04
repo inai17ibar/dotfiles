@@ -1,3 +1,4 @@
+
 #.bashrc は対話モードの bash を起動する時に毎回実行されます。具体的な用途は:
 #  環境変数でない変数を設定する (export しない変数)
 #  エイリアスを定義する
@@ -19,9 +20,45 @@ alias subl='/Applications//Sublime\ Text\ 3.app/Contents/SharedSupport/bin/subl'
 export EDITOR="/usr/local/bin/mate -w"
 
 set rmstar
-alias rm='rm -i'
-alias rm='mv -i ~/Trash'
-alias rm='set -f; rmrm'
+alias rm='rmtrash'
+alias mv='mv -i'
+alias cp='cp -ip'
+
+alias ls='ls -CF'
+alias ll='ls -AlFh --show-control-chars --color=auto'
+alias la='ls -CFal'
+alias sc='screen'
+#alias ps='ps --sort=start_time'
+
+#alias rm='mv -i ~/Trash'
+#alias rm='set -f; rmrm'
+
+alias awka="awk 'NR==1'"                   # 最初の行を表示する
+alias awke="awk 'END{print}'"              # 最後の行を表示する
+alias awkd="awk 'NF'"                      # 空行を削除する
+alias awkl="awk 'END{print NR}'"           # 行数をカウントする
+
+alias sortuni='sort | uniq -c | sort -nr'  # データの出現語をランキング
+
+alias vimpr='vim ~/.profile'
+alias vimba='vim ~/.bashrc'
+alias vimrc='vim ~/.vimrc'
+alias vimlo='vim ~/.bash_logout'
+alias vimsc='vim ~/.screenrc'
+alias vimma='vim $MAIL'
+alias soba='source ~/.bashrc'
+
+# プロンプトの表示をカスタマイズ
+export PS1='\[\033[01;32m\]\u@\H\[\033[01;34m\] \w \$\[\033[00m\]'
+
+# もろもろ環境変数を設定
+export PATH=$PATH:/sbin:/usr/sbin # パス
+export PAGER='/usr/bin/lv -c' # man とかで使われる
+export EDITOR='/usr/bin/vim' # visudo とかで使われる
+export HISTSIZE=100000 # これだけコマンド履歴を残す
+export LANG='ja_JP.UTF-8' # 以下 3 つ文字コード
+export LC_ALL='ja_JP.UTF-8'
+export LC_MESSAGES='ja_JP.UTF-8'
 
 #シェル関数
 function rmrm() {
@@ -57,3 +94,5 @@ function rmrm() {
 		return 0
 	fi
 }
+export PATH="$HOME/.anyenv/bin:$PATH"
+eval "$(anyenv init -)"
