@@ -1,10 +1,15 @@
+#なるべくbashの設定を使う
+#source ~/.bashrc #bashprofileからも読んでいる
+source ~/.bash_profile
+
+#PATHの設定はbashprofileで
+
 ########################################
 # 環境変数
 export LANG=ja_JP.UTF-8
-
-#なるべくbashの設定を使う
-source ~/.bashrc
-source ~/.bash_profile
+export LC_ALL='ja_JP.UTF-8'
+export LC_MESSAGES='ja_JP.UTF-8'
+export JAVA_HOME=$(/usr/libexec/java_home)
 
 # ヒストリの設定
 HISTFILE=~/.zsh_history
@@ -13,7 +18,6 @@ SAVEHIST=1000000
 PATH=${PATH}:~/bin
 #補完リストが多いときに尋ねない
 LISTMAX=1000
-
 #ヒストリの一覧を読みやすい形に変更
 HISTTIMEFORMAT="[%Y/%M/%D %H:%M:%S] "
 
@@ -37,16 +41,11 @@ zstyle ':zle:*' word-style unspecified
 # 補完機能を有効にする
 fpath=(/usr/local/share/zsh-completions $fpath)
 autoload -Uz compinit
-compinit
+compinit -u
 
 # 色を使用出来るようにする
 autoload -Uz colors
 colors
-
-# ↑を設定すると、 .. とだけ入力したら1つ上のディレクトリに移動できるので……
-# 2つ上、3つ上にも移動できるようにする
-alias ...='cd ../..'
-alias ....='cd ../../..'
 
 # 補完で小文字でも大文字にマッチさせる
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
@@ -78,36 +77,26 @@ add-zsh-hook precmd _update_vcs_info_msg
 # オプション
 # 日本語ファイル名を表示可能にする
 setopt print_eight_bit
-
 # beep を無効にする
 setopt no_beep
-
 # フローコントロールを無効にする
 setopt no_flow_control
-
 # '#' 以降をコメントとして扱う
 setopt interactive_comments
-
 # ディレクトリ名だけでcdする
 setopt auto_cd
-
 # cd したら自動的にpushdする
 setopt auto_pushd
 # 重複したディレクトリを追加しない
 setopt pushd_ignore_dups
-
 # 同時に起動したzshの間でヒストリを共有する
 setopt share_history
-
 # 同じコマンドをヒストリに残さない
 setopt hist_ignore_all_dups
-
 # スペースから始まるコマンド行はヒストリに残さない
 setopt hist_ignore_space
-
 # ヒストリに保存するときに余分なスペースを削除する
 setopt hist_reduce_blanks
-
 # 高機能なワイルドカード展開を使用する
 setopt extended_glob
 
@@ -145,16 +134,45 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 
+# コピペ
+if which pbcopy >/dev/null 2>&1 ; then
+# Mac
+alias -g C='| pbcopy'
+elif which xsel >/dev/null 2>&1 ; then
+# Linux
+alias -g C='| xsel --input --clipboard'
+elif which putclip >/dev/null 2>&1 ; then
+# Cygwin
+alias -g C='| putclip'
+fi
+
+
 ########################################
-# エイリアス
+# エイリアス for コマンドライン補完
+
+# ↑を設定すると、 .. とだけ入力したら1つ上のディレクトリに移動できるので……
+# 2つ上、3つ上にも移動できるようにする
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+set rmstar #*を使うときの確認
+alias rm='rmtrash' #brewに入れているrmtrashを使う
+alias ls='ls -CF'
 alias la='ls -a'
 alias ll='ls -l'
-
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-
+alias sc='screen'
+#alias ps='ps --sort=start_time'
 alias mkdir='mkdir -p'
+
+alias awka="awk 'NR==1'"                   # 最初の行を表示する
+alias awke="awk 'END{print}'"              # 最後の行を表示する
+alias awkd="awk 'NF'"                      # 空行を削除する
+alias awkl="awk 'END{print NR}'"           # 行数をカウントする
+
+alias sortuni='sort | uniq -c | sort -nr'  # データの出現語をランキング
 
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
@@ -176,6 +194,23 @@ elif which putclip >/dev/null 2>&1 ; then
 alias -g C='| putclip'
 fi
 
+alias vimpr='vim ~/.profile'
+alias vimba='vim ~/.bashrc'
+alias vimrc='vim ~/.vimrc'
+alias vimlo='vim ~/.bash_logout'
+alias vimsc='vim ~/.screenrc'
+alias vimma='vim $MAIL'
+alias soba='source ~/.bashrc'
+alias sobap='source ~/.bash_profile'
+alias sozs='source ~/.zshrc'
+
+#エイリアス for プログラム呼び出し
+alias atom='/usr/local/bin/atom'
+alias emacs='/usr/local/bin/emacs' ##GNU Emacs 24.5.1
+alias subl='/Applications//Sublime\ Text\ 3.app/Contents/SharedSupport/bin/subl'
+#alias brew="env PATH=${PATH/\/Users\/inai17ibar\/\.phpenv\/shims:/} brew"
+alias vscode='open -a /Applications/Visual\ Studio\ Code.app'
+
 ########################################
 # OS 別の設定
 case ${OSTYPE} in
@@ -190,22 +225,9 @@ alias ls='ls -F --color=auto'
 ;;
 esac
 
-# vim:set ft=zsh:
-
-# Write Preview
-
-# Parsed as Markdown Edit in fullscreen
-
+#######################################
 ### Oh my zsh setting
 plugins=(brew git ruby gem pip)
-
-# pyenv
-#PYENV_ROOT="${HOME}/.pyenv"
-#eval "$(pyenv init -)"
-#if [ -d "${PYENV_ROOT}" ]; then
-#	export PATH=${PYENV_ROOT}/bin:$PATH
-#	eval "$(pyenv init -)"
-#	fi
 
 function peco-select-history() {
 local tac
@@ -222,4 +244,16 @@ zle clear-screen
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
-export PATH="/usr/local/bin:$PATH"
+
+
+##############################################
+#PATH="$PATH:$HOME/.cask/bin"
+
+#export PATH="$PATH:$HOME/.anyenv/bin"
+#eval "$(anyenv init -)"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/inai17ibar/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/inai17ibar/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/inai17ibar/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/inai17ibar/google-cloud-sdk/completion.zsh.inc'; fi
